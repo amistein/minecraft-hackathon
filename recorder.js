@@ -19,9 +19,9 @@ events.playerMove(function(evt){
   if(isRecording){
     eventsArr.push(evt);
   }
-  console.log(evt.player.name);
-  console.log(evt.from);
-  console.log(evt.to);
+  // console.log(evt.player.name);
+  // console.log(evt.from);
+  // console.log(evt.to);
 
 });
 
@@ -33,20 +33,37 @@ exports.startRecord = function(){
   isRecording = true;
 }
 
-var nextMove = function (arr, n){
-    if(n>=arr.length) return;
+var nextMove = function (arr, n, reverse){
+    if(!reverse){
+      if(n>=arr.length) return;
+    }
+    else{
+      if(n < 0) return;
+    }
 
     teleport(yoonahbrow, arr[n].from);
 
     setTimeout(function(){
-      nextMove(arr, n+1);
+      if(!reverse){
+        nextMove(arr, n+1);
+      }
+      else{
+        nextMove(arr, n-1, reverse);
+      }
     }, speed);
+
 };
 
-exports.playback = function(newSpeed){
+exports.playback = function(newSpeed, reverse){
   if(!isRecording){
     speed = newSpeed;
-    nextMove(eventsArr, 0);
+    if(!reverse){
+      nextMove(eventsArr, 0, reverse);
+    }
+    else{
+      nextMove(eventsArr, eventsArr.length-1, reverse)
+    }
+
   }
   else{
     console.log("Stop recording before playback");
